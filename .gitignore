@@ -25,6 +25,7 @@ yarn-error.log*
 *.suo
 *.user
 
-# Temporary scratch & system generated files
+# Temporary scratch, screenshots & system generated files
 .system_generated/
 scratch/
+screenshots/
