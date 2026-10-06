@@ -148,12 +148,14 @@ sequenceDiagram
 
 ## 📸 Visual Showcase & Screenshot Proofs
 
-All screenshots below are captured directly from the live MERN host application (`http://localhost:5173`) and available in the [`screenshots/`](screenshots/) directory.
+## 📸 Visual Showcase & Screenshot Proofs
+
+Captured directly from the live MERN host application (`http://localhost:5173`):
 
 ### 1. Home Page Dashboard (`/`)
 Overview dashboard displaying PagePilot integration architecture, live system status, quick navigation routes, and top header guidance controls (**Demos**, **Banners**, **Tooltips**, **Start Tour**).
 
-![Home Page Dashboard](screenshots/homepage_dashboard.png)
+![Home Page Dashboard](assets/homepage_dashboard.png)
 
 *Figure 1: Home Dashboard rendering host layout, proxy architecture cards, live status, and guidance hub controls.*
 
@@ -162,7 +164,7 @@ Overview dashboard displaying PagePilot integration architecture, live system st
 ### 2. Dynamic Content Page & Guidance Hub (`/about-us`)
 Fetches zero-code page HTML from PagePilot API, sanitizes via JSDOM + DOMPurify, encapsulates in Shadow DOM, and triggers dynamic element tooltips (`#about-intro`) and product tours on-demand.
 
-![Dynamic Page & Guidance Hub](screenshots/about_us_page_1791230443039.jpg)
+![Dynamic Page & Guidance Hub](assets/about_us_page.jpg)
 
 *Figure 2: Zero-code PagePilot section HTML rendered in Shadow DOM with active Tooltips (#about-intro) and Product Tours.*
 
@@ -171,7 +173,7 @@ Fetches zero-code page HTML from PagePilot API, sanitizes via JSDOM + DOMPurify,
 ### 3. App Banners Showcase (`/banner`)
 Dedicated showcase page demonstrating live PagePilot App Banner containers (`menus` top announcement bar and `Shubh` carousel banner) rendered via `window.ahdJs.renderAppBanner(identifier, true)`.
 
-![App Banners Showcase](screenshots/banner_showcase_1791230465837.jpg)
+![App Banners Showcase](assets/banner_showcase.jpg)
 
 *Figure 3: Dedicated App Banner showcase featuring live announcement strip ('menus') and carousel ('Shubh').*
 
@@ -180,7 +182,7 @@ Dedicated showcase page demonstrating live PagePilot App Banner containers (`men
 ### 4. Interactive Demos Showcase (`/demos`)
 Dedicated showcase page rendering the live PagePilot Demo player (`6abfe7886aff17c1c69b629b`) inside an isolated iframe. Automatically negotiates postMessage query parameter handshake (`PP_REQUEST_QUERY_PARAMS` → `PP_QUERY_PARAMS`).
 
-![Interactive Demos Showcase](screenshots/demos_showcase_1791230509344.jpg)
+![Interactive Demos Showcase](assets/demos_showcase.jpg)
 
 *Figure 4: PagePilot Demo viewer iframe (6abfe7886aff17c1c69b629b) with postMessage query parameter handshake.*
 
@@ -189,7 +191,7 @@ Dedicated showcase page rendering the live PagePilot Demo player (`6abfe7886aff1
 ### 5. Protected Draft Preview Mode (`/about-us-pilot?mode=preview`)
 Demonstrates secure draft preview mode. Content is only rendered when `?mode=preview` is supplied along with valid token authorization (`x-preview-token`). Unauthenticated or invalid token requests return `403 Forbidden` and enforce `Cache-Control: no-store`.
 
-![Protected Draft Preview Mode](screenshots/draft_preview_page_1791230536498.jpg)
+![Protected Draft Preview Mode](assets/draft_preview_page.jpg)
 
 *Figure 5: Secure draft preview rendering draft content using x-preview-token session auth and Cache-Control: no-store.*
 
