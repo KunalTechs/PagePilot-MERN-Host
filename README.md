@@ -55,49 +55,49 @@ This repository was created as part of the technical evaluation for migrating cu
 graph TD
     User(["Client Browser / Visitor"])
     
-    subgraph Frontend ["React 18 + Vite Frontend Client (Port 5173)"]
-        Router["React Router v6<br/>(/:slug, /banner, /demos)"]
+    subgraph Frontend ["React 18 + Vite Frontend Client - Port 5173"]
+        Router["React Router v6 - /:slug, /banner, /demos"]
         LayoutComp["Layout & Navigation Shell"]
-        ShadowRenderer["PagePilotRenderer<br/>(Shadow DOM Isolation)"]
-        SDKHub["PagePilotGuidanceHub<br/>(ahdjs SDK Loader)"]
-        DemoFrame["PagePilotDemo<br/>(Iframe postMessage Listener)"]
+        ShadowRenderer["PagePilotRenderer - Shadow DOM Isolation"]
+        SDKHub["PagePilotGuidanceHub - ahdjs SDK Loader"]
+        DemoFrame["PagePilotDemo - Iframe postMessage Listener"]
     end
 
-    subgraph Backend ["Express API Proxy & Security Layer (Port 5000)"]
-        RateLimit["Express Rate Limiter<br/>(60 req/min/IP)"]
-        ValidateSlug["Validate Slug Middleware<br/>(Regex allow-list)"]
-        CheckAuth["Check Preview Auth<br/>(crypto.timingSafeEqual)"]
-        PageService["PagePilot Service<br/>(DOMPurify + JSDOM)"]
+    subgraph Backend ["Express API Proxy & Security Layer - Port 5000"]
+        RateLimit["Express Rate Limiter - 60 req/min/IP"]
+        ValidateSlug["Validate Slug Middleware - Regex allow-list"]
+        CheckAuth["Check Preview Auth - crypto.timingSafeEqual"]
+        PageService["PagePilot Service - DOMPurify + JSDOM"]
     end
 
-    subgraph CacheDB [Database Layer]
-        MongoDB[(MongoDB PageCache<br/>TTL Expiry: 300s)]
+    subgraph CacheDB ["Database Layer"]
+        MongoDB[("MongoDB PageCache - TTL Expiry: 300s")]
     end
 
     subgraph External ["Upstream PagePilot Platform Services"]
-        PagePilotAPI["PagePilot Tenant API<br/>(pagepilot.fabbuilder.com)"]
-        SDKCDN["ahdjs SDK CDN<br/>(pagepilot.fabbuilder.com/ahdjs)"]
-        DemoViewer["Demo Viewer App<br/>(pagepilot-demo-viewer-prod.web.app)"]
+        PagePilotAPI["PagePilot Tenant API - pagepilot.fabbuilder.com"]
+        SDKCDN["ahdjs SDK CDN - pagepilot.fabbuilder.com/ahdjs"]
+        DemoViewer["Demo Viewer App - pagepilot-demo-viewer-prod.web.app"]
     end
 
-    User -->|Visits /:slug| Router
+    User -->|"Visits /:slug"| Router
     Router --> LayoutComp
-    LayoutComp -->|Render Dynamic Page| ShadowRenderer
-    ShadowRenderer -->|Fetch Content| RateLimit
+    LayoutComp -->|"Render Dynamic Page"| ShadowRenderer
+    ShadowRenderer -->|"Fetch Content"| RateLimit
     RateLimit --> ValidateSlug
     ValidateSlug --> CheckAuth
-    CheckAuth -->|Check Cache| MongoDB
-    MongoDB -->|Cache Hit| CheckAuth
-    CheckAuth -->|Cache Miss: Fetch Upstream| PageService
-    PageService -->|POST /pagebyslug (Includes: menus, faqs)| PagePilotAPI
-    PagePilotAPI -->|Return JSON Section HTML| PageService
-    PageService -->|Store Payload| MongoDB
+    CheckAuth -->|"Check Cache"| MongoDB
+    MongoDB -->|"Cache Hit"| CheckAuth
+    CheckAuth -->|"Cache Miss: Fetch Upstream"| PageService
+    PageService -->|"POST /pagebyslug - Includes: menus, faqs"| PagePilotAPI
+    PagePilotAPI -->|"Return JSON Section HTML"| PageService
+    PageService -->|"Store Payload"| MongoDB
     
-    LayoutComp -->|Trigger Tours & Tooltips| SDKHub
-    SDKHub -->|Load ahdjs.js| SDKCDN
+    LayoutComp -->|"Trigger Tours & Tooltips"| SDKHub
+    SDKHub -->|"Load ahdjs.js"| SDKCDN
     
-    LayoutComp -->|Render /demos| DemoFrame
-    DemoFrame <-->|postMessage (PP_QUERY_PARAMS)| DemoViewer
+    LayoutComp -->|"Render /demos"| DemoFrame
+    DemoFrame -->|"postMessage: PP_QUERY_PARAMS"| DemoViewer
 ```
 
 ---
@@ -110,21 +110,21 @@ graph TD
 sequenceDiagram
     autonumber
     actor User as Visitor / Browser
-    participant Client as React Client (DynamicPage)
+    participant Client as React Client - DynamicPage
     participant Proxy as Express Proxy Server
     participant Cache as MongoDB PageCache
     participant Upstream as PagePilot Tenant API
 
     User->>Client: Navigate to /about-us
     Client->>Proxy: GET /api/pages/about-us
-    Proxy->>Proxy: Validate Slug (/^[a-z0-9-]+$/)
+    Proxy->>Proxy: Validate Slug - Regex Allow-List
     
     alt Mode = Live (Public)
         Proxy->>Cache: Query PageCache WHERE slug = 'about-us'
         alt Cache Hit & Valid TTL
             Cache-->>Proxy: Return Cached Page JSON Payload
         else Cache Miss or Expired
-            Proxy->>Upstream: POST /api/tenant/:tid/pagebyslug/about-us<br/>{ data: { includes: [headerMenu, faqs] } }
+            Proxy->>Upstream: POST /api/tenant/:tid/pagebyslug/about-us
             Upstream-->>Proxy: Return Raw JSON (page, headerMenu, faqs)
             Proxy->>Proxy: Sanitize HTML with JSDOM + DOMPurify
             Proxy->>Cache: Upsert into MongoDB PageCache (TTL 300s)
@@ -133,11 +133,11 @@ sequenceDiagram
     else Mode = Preview (?mode=preview)
         Proxy->>Proxy: Verify x-preview-token via timingSafeEqual
         alt Invalid Token
-            Proxy-->>Client: 403 Forbidden { error: 'Invalid preview token' }
+            Proxy-->>Client: 403 Forbidden - Invalid preview token
         else Valid Token
-            Proxy->>Upstream: POST /api/tenant/:tid/pagebyslug/about-us (Includes: [])
+            Proxy->>Upstream: POST /api/tenant/:tid/pagebyslug/about-us
             Upstream-->>Proxy: Return Draft Page JSON
-            Proxy-->>Client: 200 OK (Cache-Control: no-store)
+            Proxy-->>Client: 200 OK - Cache-Control: no-store
         end
     end
     
@@ -448,17 +448,3 @@ window.addEventListener('message', (event) => {
 5. **Access Application**:
    Open browser at `http://localhost:5173`.
 
----
-
-## 📧 Submission Summary for Evaluation Email
-
-> **Subject**: PagePilot MERN Integration POC — Submission & Technical Overview
->
-> **Summary**:
-> We have completed the integration of **PagePilot** into a modern MERN stack architecture. The solution satisfies all core assignment requirements and incorporates all bonus engagement modules:
->
-> 1. **Dynamic Pages (`/:slug`)**: Fully dynamic routing for PagePilot pages using an Express API proxy, MongoDB TTL caching, DOMPurify HTML sanitization, and Shadow DOM style isolation.
-> 2. **Product Tours & Tooltips**: Dynamic `ahdjs` SDK loader providing guided tours and element-bound tooltips (`/about-us`).
-> 3. **App Banners**: Responsive announcement top bar and carousel banners (`/banner` route).
-> 4. **Interactive Demos**: Isolated iframe viewer with postMessage event synchronization (`/demos` route).
-> 5. **Security & AI Approach**: Built using AI pair programming (Antigravity IDE) with human security audits resolving preview secret exposure, SSRF prevention, and open proxy endpoints. All 69 Jest server tests and Vite client builds are 100% passing.
