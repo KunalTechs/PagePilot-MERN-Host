@@ -148,8 +148,6 @@ sequenceDiagram
 
 ## 📸 Visual Showcase & Screenshot Proofs
 
-## 📸 Visual Showcase & Screenshot Proofs
-
 Captured directly from the live MERN host application (`http://localhost:5173`):
 
 ### 1. Home Page Dashboard (`/`)
